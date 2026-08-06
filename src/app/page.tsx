@@ -13,6 +13,7 @@ import TechStack           from "@/sections/TechStack";
 import Blog                from "@/sections/Blog";
 import Contact             from "@/sections/Contact";
 import NameIntro           from "@/components/NameIntro";
+import ProjectsPanel       from "@/components/ProjectsPanel";
 
 export default function Home() {
   useLenis();
@@ -22,7 +23,6 @@ export default function Home() {
     <>
       <NameIntro onComplete={() => {}} />
       <Navbar />
-
       <SocialRail />
 
       <main className="overflow-x-hidden bg-black text-white">
@@ -36,6 +36,9 @@ export default function Home() {
         <Blog />
         <Contact />
       </main>
+
+      {/* Slides in from right when "View Projects" is clicked */}
+      <ProjectsPanel />
     </>
   );
 }

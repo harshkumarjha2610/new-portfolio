@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, useInView, type Variants, useMotionValue, useTransform, animate } from "framer-motion";
 
@@ -204,6 +204,7 @@ export default function About() {
         className="flex justify-center pb-24"
       >
         <button
+          onClick={() => window.dispatchEvent(new Event("open-projects-panel"))}
           className="
             group
             px-10 py-4
@@ -214,6 +215,7 @@ export default function About() {
             transition-all duration-300
             hover:scale-105 hover:shadow-xl hover:shadow-neutral-900/30
             active:scale-100
+            cursor-pointer
           "
         >
           View Projects
