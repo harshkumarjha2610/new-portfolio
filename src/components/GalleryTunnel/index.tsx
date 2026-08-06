@@ -70,10 +70,12 @@ interface ImageBoxProps {
     style?: CSSProperties;
 }
 
-const srcOf = (image: any): string =>
+type ImageBoxImageInput = string | ImageBoxImage | null | undefined;
+
+const srcOf = (image: ImageBoxImageInput): string =>
     typeof image === "string" ? image : (image?.src ?? "");
 
-function __OriginkitBase_ImageBox(props: Partial<ImageBoxProps>) {
+function OriginkitBaseImageBox(props: Partial<ImageBoxProps>) {
     const {
         images,
         colors,
@@ -107,10 +109,13 @@ function __OriginkitBase_ImageBox(props: Partial<ImageBoxProps>) {
     }, [colors]);
 
     const cfgRef = useRef<{ speed: number; boost: number }>({ speed: 1, boost: 1 });
+
+useEffect(() => {
     cfgRef.current = {
         speed: Math.max(0, speed) / 100,
         boost: Math.max(0, boost) / 10,
     };
+}, [speed, boost]);
 
     useEffect(() => {
         const frame = frameRef.current;
@@ -502,5 +507,5 @@ const __originkitPresetProps = {
 };
 
 export default function GalleryTunnel(props: Record<string, unknown>) {
-  return <__OriginkitBase_ImageBox {...(__originkitPresetProps as Record<string, unknown>)} {...props} />;
+  return <OriginkitBaseImageBox {...(__originkitPresetProps as Record<string, unknown>)} {...props} />;
 }

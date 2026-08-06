@@ -1,26 +1,38 @@
 "use client";
 
-import { useRef, useEffect, useState, type FormEvent } from "react";
-import { motion } from "framer-motion";
+import { useRef, useEffect, useState, type FormEvent, type ChangeEvent } from "react";
+import { motion, type Variants } from "framer-motion";
 import { HiArrowRight } from "react-icons/hi2";
 import { gsap } from "@/lib/gsap";
 
-const fadeUp = {
+const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
+
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.7, delay: i * 0.1, ease: EASE_OUT_EXPO },
   }),
 };
 
 const inputClass =
   "w-full px-4 py-3.5 rounded-xl bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] text-sm text-white placeholder:text-white/30 transition-[border-color,box-shadow,background] duration-300 focus:outline-none focus:border-violet-500/40 focus:bg-white/[0.06] focus:shadow-[0_0_0_3px_rgba(139,92,246,0.1)]";
 
+type FormState = {
+  name: string;
+  email: string;
+  projectIdea: string;
+};
+
+const initialState: FormState = { name: "", email: "", projectIdea: "" };
+
 export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState<FormState>(initialState);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const card = cardRef.current;
@@ -48,9 +60,26 @@ export default function Contact() {
     return () => ctx.revert();
   }, []);
 
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!form.name.trim() || !form.email.trim() || !form.projectIdea.trim()) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    setError(null);
     setSubmitted(true);
+
+    // TODO: replace with your actual submit logic (API route, email service, etc.)
+    // e.g. fetch("/api/contact", { method: "POST", body: JSON.stringify(form) })
   };
 
   return (
@@ -59,8 +88,8 @@ export default function Contact() {
       id="contact"
       className="relative w-full overflow-hidden bg-[#050505] text-white"
     >
-      {/* Background accents — scoped to this section only */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
+      {/* Background accents — scoped to this section only, click-through */}
+      <div className="absolute inset-0 pointer-events-none z-0" aria-hidden>
         <div className="absolute -top-[20%] left-[10%] w-[40vw] h-[40vw] rounded-full bg-violet-600/[0.06] blur-[120px]" />
         <div className="absolute bottom-[10%] right-[5%] w-[35vw] h-[35vw] rounded-full bg-purple-500/[0.05] blur-[100px]" />
         <div
@@ -75,7 +104,7 @@ export default function Contact() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-2xl px-5 sm:px-6 lg:px-8 py-[clamp(5rem,10vw,8rem)]">
+      <div className="relative z-20 mx-auto max-w-2xl px-5 sm:px-6 lg:px-8 py-[clamp(5rem,10vw,8rem)]">
         {/* Header */}
         <motion.div
           initial="hidden"
@@ -115,10 +144,11 @@ export default function Contact() {
         <div
           ref={cardRef}
           className="
-            relative rounded-[28px] p-8 md:p-10
+            relative z-20 rounded-[28px] p-8 md:p-10
             bg-white/[0.03] backdrop-blur-2xl
             border border-white/[0.08]
             shadow-[0_8px_40px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)]
+            pointer-events-auto
           "
         >
           {/* Top shimmer */}
@@ -142,7 +172,11 @@ export default function Contact() {
               </p>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form
+              onSubmit={handleSubmit}
+              onClick={(e) => e.stopPropagation()}
+              className="relative z-20 flex flex-col gap-5 pointer-events-auto"
+            >
               <div>
                 <label
                   htmlFor="contact-name"
@@ -157,6 +191,8 @@ export default function Contact() {
                   required
                   autoComplete="name"
                   placeholder="Your name"
+                  value={form.name}
+                  onChange={handleChange}
                   className={inputClass}
                 />
               </div>
@@ -175,6 +211,8 @@ export default function Contact() {
                   required
                   autoComplete="email"
                   placeholder="you@example.com"
+                  value={form.email}
+                  onChange={handleChange}
                   className={inputClass}
                 />
               </div>
@@ -192,9 +230,15 @@ export default function Contact() {
                   required
                   rows={5}
                   placeholder="Tell me about your project..."
+                  value={form.projectIdea}
+                  onChange={handleChange}
                   className={`${inputClass} resize-none`}
                 />
               </div>
+
+              {error && (
+                <p className="text-sm text-red-400 -mt-1">{error}</p>
+              )}
 
               <motion.button
                 type="submit"

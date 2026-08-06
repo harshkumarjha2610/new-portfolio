@@ -17,8 +17,8 @@ export default function useLenis() {
       autoRaf: false,
     });
 
-    // @ts-expect-error: lenis instance on window for nav scroll
-    window.lenis = lenis;
+    // Store on a custom key — Lenis itself uses window.lenis for metadata
+    (window as unknown as { __lenis?: typeof lenis }).__lenis = lenis;
 
     // Keep a named reference so we can remove it on cleanup
     const onScroll = () => ScrollTrigger.update();
@@ -33,6 +33,7 @@ export default function useLenis() {
       lenis.off("scroll", onScroll);
       gsap.ticker.remove(ticker);
       lenis.destroy();
+      (window as unknown as { __lenis?: unknown }).__lenis = undefined;
     };
   }, []);
 }

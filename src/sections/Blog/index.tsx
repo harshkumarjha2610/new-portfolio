@@ -47,7 +47,7 @@ export default function Blog() {
       >
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           <h2
-            className="uppercase leading-none tracking-tight text-white"
+            className="uppercase leading-none tracking-tight text-cyan-100"
             style={{
               fontFamily: "var(--font-space), 'Space Grotesk', sans-serif",
               fontSize: "clamp(2.5rem, 6vw, 5rem)",
@@ -55,7 +55,7 @@ export default function Blog() {
               letterSpacing: "-0.02em",
             }}
           >
-            Latest Articles /
+            Latest Articles
           </h2>
           <p
             className="max-w-sm leading-relaxed lg:text-right"

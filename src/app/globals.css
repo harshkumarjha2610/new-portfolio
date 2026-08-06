@@ -59,6 +59,7 @@ body {
 /* ─── Nav link underline animation ───────────────────────────── */
 .nav-link {
   position: relative;
+  cursor: pointer;
 }
 .nav-link::after {
   content: "";
@@ -75,4 +76,8 @@ body {
 .nav-link:hover::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+a {
+  cursor: pointer;
 }

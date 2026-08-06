@@ -34,10 +34,9 @@ export default function NameIntro({ onComplete }: NameIntroProps) {
     // Ensure Lenis is stopped even if it initializes after this component mounts
     let lenisInterval: NodeJS.Timeout;
     const stopLenis = () => {
-      // @ts-expect-error: lenis added to window
-      if (window.lenis) {
-        // @ts-expect-error: lenis added to window
-        window.lenis.stop();
+      const l = (window as unknown as { __lenis?: { stop: () => void } }).__lenis;
+      if (l) {
+        l.stop();
       } else {
         lenisInterval = setTimeout(stopLenis, 50);
       }
@@ -62,8 +61,9 @@ export default function NameIntro({ onComplete }: NameIntroProps) {
                 ease: "power2.inOut",
                 onComplete: () => {
                   document.body.style.overflow = "";
-                  // @ts-expect-error: lenis added to window
-                  if (window.lenis) window.lenis.start();
+                  // @ts-expect-error: __lenis added to window
+                  if (window.__lenis) window.__lenis.start();
+                  setShouldRender(false);
                   onComplete();
                 }
 
@@ -91,10 +91,10 @@ export default function NameIntro({ onComplete }: NameIntroProps) {
           
           if (frame.fillMode === 'outline') {
             el.style.color = 'transparent';
-            el.style.WebkitTextStroke = '2px currentColor';
+            el.style.webkitTextStroke = '2px currentColor';
           } else {
             el.style.color = 'currentColor';
-            el.style.WebkitTextStroke = '0';
+            el.style.webkitTextStroke = '0';
           }
 
           if (frame.glitch) {
@@ -124,8 +124,8 @@ export default function NameIntro({ onComplete }: NameIntroProps) {
       ctx.revert();
       clearTimeout(lenisInterval);
       document.body.style.overflow = "";
-      // @ts-expect-error: lenis added to window
-      if (window.lenis) window.lenis.start();
+      // @ts-expect-error: __lenis added to window
+      if (window.__lenis) window.__lenis.start();
     };
   }, [shouldRender, onComplete]);
 
