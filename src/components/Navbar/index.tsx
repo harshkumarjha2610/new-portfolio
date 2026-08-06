@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 const NAV_LINKS = [
@@ -12,10 +12,48 @@ const NAV_LINKS = [
   { label: "Contact",  href: "#contact" },
 ];
 
+const NAVBAR_OFFSET = 64;
+
+declare global {
+  interface Window {
+    lenis?: {
+      scrollTo: (
+        target: string | HTMLElement | number,
+        options?: { offset?: number; duration?: number; immediate?: boolean }
+      ) => void;
+    };
+  }
+}
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   // true = over a dark section (white text), false = over light section (dark text)
   const [isDark, setIsDark] = useState(true);
+
+  const scrollToSection = useCallback((href: string) => {
+    if (!href.startsWith("#")) return;
+    const target = document.querySelector(href);
+    if (!target) return;
+
+    if (window.lenis?.scrollTo) {
+      window.lenis.scrollTo(target as HTMLElement, { offset: -NAVBAR_OFFSET });
+    } else {
+      const top =
+        target.getBoundingClientRect().top + window.scrollY - NAVBAR_OFFSET;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+
+    window.history.pushState(null, "", href);
+    setMenuOpen(false);
+  }, []);
+
+  const handleNavClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+      e.preventDefault();
+      scrollToSection(href);
+    },
+    [scrollToSection]
+  );
 
   useEffect(() => {
     const aboutSection = document.getElementById("about");
@@ -49,6 +87,7 @@ export default function Navbar() {
       {/* Logo */}
       <Link
         href="#hero"
+        onClick={(e) => handleNavClick(e, "#hero")}
         className={`font-black text-lg tracking-[0.2em] uppercase transition-colors duration-500 ${logoColor}`}
       >
         HARSH
@@ -60,6 +99,7 @@ export default function Navbar() {
           <li key={label}>
             <Link
               href={href}
+              onClick={(e) => handleNavClick(e, href)}
               className={`nav-link text-sm font-medium tracking-widest uppercase transition-colors duration-500 ${textColor}`}
             >
               {label}
@@ -98,7 +138,7 @@ export default function Navbar() {
           <Link
             key={label}
             href={href}
-            onClick={() => setMenuOpen(false)}
+            onClick={(e) => handleNavClick(e, href)}
             className="text-white/90 text-2xl font-semibold tracking-widest uppercase hover:text-white transition-colors"
           >
             {label}

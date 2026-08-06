@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -36,13 +37,11 @@ const SERVICES = [
 
 /* ─── Single capsule card ──────────────────────────────────────── */
 function ServiceCard({
-  num,
   title,
   tags,
   img,
   index,
 }: {
-  num: string;
   title: string;
   tags: string[];
   img: string;

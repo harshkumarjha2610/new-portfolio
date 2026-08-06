@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import StarBurst from "@/components/StarBurst";
 
 const ITEMS = [
   {
@@ -120,7 +121,7 @@ export default function ExperiencesTitle() {
     const getEnd = () => {
       const hold  = vh * 0.15;
       const slide = heading.offsetWidth;
-      const rise  = vh;
+      const rise  = vh * 0.85;
       const list  = getContentTravel();
       return `+=${hold + slide + rise + list}`;
     };
@@ -147,15 +148,26 @@ export default function ExperiencesTitle() {
     <section
       ref={wrapperRef}
       id="experiences-title"
-      className="relative w-full overflow-hidden bg-[#0a0a0a]"
+      className="relative w-full overflow-hidden bg-black"
       style={{ height: "100vh" }}
     >
+      {/* ── StarBurst Background ── */}
+      <div className="absolute inset-0 z-0">
+        <StarBurst 
+          color="#ffffff" 
+          starCount={120} 
+          speed={5} 
+          opacity={30} 
+          starSize={8} 
+        />
+      </div>
+
       {/* ── EXPERIENCES heading ── */}
-      <div className="absolute inset-0 flex items-center overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 z-10 flex items-center overflow-hidden pointer-events-none">
         <h1
           ref={headingRef}
-          className="font-poppins font-semibold uppercase leading-none whitespace-nowrap will-change-transform text-white"
-          style={{ fontSize: "40vw", letterSpacing: "-0.04em" }}
+          className="font-poppins uppercase leading-none whitespace-nowrap will-change-transform text-transparent bg-clip-text bg-linear-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
+          style={{ fontSize: "25vw", letterSpacing: "-0.04em", fontWeight: 400 }}
         >
           EXPERIENCES
         </h1>
@@ -166,7 +178,7 @@ export default function ExperiencesTitle() {
         ref={panelRef}
         className="absolute inset-x-0 bottom-0 z-30 will-change-transform"
         style={{
-          height: "100vh",
+          height: "85vh",
           background: "rgba(255,255,255,0.06)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",

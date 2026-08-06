@@ -1,0 +1,6 @@
+.nameText {
+  font-size: clamp(4rem, 13vw, 10rem);
+  line-height: 1;
+  text-align: center;
+  transform-origin: center;
+}

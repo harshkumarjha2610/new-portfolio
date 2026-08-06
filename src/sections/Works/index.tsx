@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useRef, useEffect, useState } from "react";
@@ -14,7 +15,6 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const WORD = "WORKS";
 const BG   = "#a6a6a6";
-const GLASS = "#a6a6a6";
 
 const LEFT_COLORS: Record<number, string> = {
   0: "#ffffff", 1: "#1a1a1a", 2: "#545454", 3: "#1a1a1a", 4: "#1a1a1a",

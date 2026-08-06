@@ -17,8 +17,12 @@ export default function useLenis() {
       autoRaf: false,
     });
 
+    // @ts-expect-error: lenis instance on window for nav scroll
+    window.lenis = lenis;
+
     // Keep a named reference so we can remove it on cleanup
     const onScroll = () => ScrollTrigger.update();
+
     lenis.on("scroll", onScroll);
 
     const ticker = (time: number) => lenis.raf(time * 1000);

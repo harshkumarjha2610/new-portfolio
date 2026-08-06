@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useInView, type Variants } from "framer-motion";
+import { motion, useInView, type Variants, useMotionValue, useTransform, animate } from "framer-motion";
 
 const SKILLS = [
   "Full-Stack Development (Next.js / React)",
@@ -39,6 +39,33 @@ const fadeUp: Variants = {
     transition: { duration: 0.7, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] },
   }),
 };
+
+function CountingNumber({ valueStr, inView, delay = 0 }: { valueStr: string; inView: boolean; delay?: number }) {
+  const numMatch = valueStr.match(/\d+/);
+  const number = numMatch ? parseInt(numMatch[0], 10) : 0;
+  const suffix = numMatch ? valueStr.slice(numMatch.index! + numMatch[0].length) : valueStr;
+  const prefix = numMatch ? valueStr.slice(0, numMatch.index!) : "";
+
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest));
+
+  useEffect(() => {
+    if (inView) {
+      const controls = animate(count, number, { duration: 2.5, delay, ease: "easeOut" });
+      return controls.stop;
+    }
+  }, [inView, number, count, delay]);
+
+  if (!numMatch) return <>{valueStr}</>;
+
+  return (
+    <>
+      {prefix}
+      <motion.span>{rounded}</motion.span>
+      {suffix}
+    </>
+  );
+}
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -134,7 +161,7 @@ export default function About() {
                 `}
               >
                 <p className="font-black text-4xl md:text-5xl text-neutral-900 leading-none mb-1">
-                  {stat.value}
+                  <CountingNumber valueStr={stat.value} inView={inView} delay={(i + 1) * 0.15 + 0.3} />
                 </p>
                 <p className="font-semibold text-sm text-neutral-700">{stat.label}</p>
                 {stat.sub && (
