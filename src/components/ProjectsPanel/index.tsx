@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 
 // Lazy-load the heavy Three.js Vortex only when panel opens
 const Vortex = dynamic(() => import("@/components/Vortex"), { ssr: false });
@@ -57,6 +58,85 @@ export default function ProjectsPanel() {
       <Vortex
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
       />
+
+      {/* ── Center Text Overlay ── */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+          zIndex: 5,
+        }}
+      >
+        <h2
+          style={{
+            color: "white",
+            textAlign: "center",
+            fontFamily: "var(--font-geist-sans), sans-serif",
+            fontSize: "clamp(2rem, 5vw, 4.5rem)",
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          {open && (
+            <>
+              <div style={{ display: "block" }}>
+                {"Introducing ".split("").map((char, i, arr) => (
+                  <motion.span
+                    key={`intro-${i}`}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 1.3 + (arr.length - 1 - i) * 0.04, type: "spring", damping: 10, stiffness: 100 }}
+                    style={{ display: "inline-block", whiteSpace: "pre", fontWeight: 400 }}
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+                {"Selected".split("").map((char, i, arr) => (
+                  <motion.span
+                    key={`sel-${i}`}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 1.3 + ("Introducing ".length + arr.length - 1 - i) * 0.04, type: "spring", damping: 10, stiffness: 100 }}
+                    style={{ display: "inline-block", whiteSpace: "pre", fontWeight: 800, fontStyle: "italic" }}
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+              </div>
+              
+              <div style={{ display: "block" }}>
+                {"Projects ".split("").map((char, i) => (
+                  <motion.span
+                    key={`proj-${i}`}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 1.3 + i * 0.04, type: "spring", damping: 10, stiffness: 100 }}
+                    style={{ display: "inline-block", whiteSpace: "pre", fontWeight: 800, fontStyle: "italic" }}
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+                {"That Matter".split("").map((char, i) => (
+                  <motion.span
+                    key={`matter-${i}`}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 1.3 + ("Projects ".length + i) * 0.04, type: "spring", damping: 10, stiffness: 100 }}
+                    style={{ display: "inline-block", whiteSpace: "pre", fontWeight: 400 }}
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+              </div>
+            </>
+          )}
+        </h2>
+      </div>
 
       {/* ── Close button — top-left, always on top ── */}
       <button

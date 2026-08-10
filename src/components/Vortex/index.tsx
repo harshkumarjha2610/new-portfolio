@@ -140,7 +140,7 @@ function makeShape(cfg: Record<string, number>) {
   };
 }
 
-type VortexAPI = { rebuild: () => void; dispose: () => void };
+type VortexAPI = { rebuild: () => void; dispose: () => void; canvas: HTMLCanvasElement };
 
 function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef: { current: Record<string, unknown> }): VortexAPI {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
