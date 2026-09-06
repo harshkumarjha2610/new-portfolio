@@ -185,7 +185,9 @@ export default function Home() {
         </section>
 
         {/* ── Projects Grid (Different dimensions Bento Grid) ── */}
-        <ProjectsGrid />
+        <div id="works">
+          <ProjectsGrid />
+        </div>
 
         <Services />
 
