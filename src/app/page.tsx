@@ -19,6 +19,7 @@ import NameIntro           from "@/components/NameIntro";
 import SignatureProjects   from "@/sections/SignatureProjects";
 
 import ProjectsGrid       from "@/components/ProjectsGrid";
+import SolarSystem        from "@/components/SolarSystem";
 
 import InteractiveHero     from "@/components/InteractiveHero";
 
@@ -176,6 +177,13 @@ export default function Home() {
         <EvolveSection />
         <About />
         
+        {/* ── Tech Stack Solar System ── */}
+        <section className="relative w-full flex flex-col items-center justify-center py-16 overflow-hidden bg-black">
+          <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-2">Technologies I Work With</p>
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-12 text-center">Tech Orbit</h2>
+          <SolarSystem />
+        </section>
+
         {/* ── Projects Grid (Different dimensions Bento Grid) ── */}
         <ProjectsGrid />
 

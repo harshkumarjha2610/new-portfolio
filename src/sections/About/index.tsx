@@ -195,32 +195,6 @@ export default function About() {
         </p>
       </motion.div>
 
-      {/* ── CTA ── */}
-      <motion.div
-        custom={5}
-        variants={fadeUp}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        className="flex justify-center pb-24"
-      >
-        <button
-          onClick={() => window.dispatchEvent(new Event("open-projects-panel"))}
-          className="
-            group
-            px-10 py-4
-            bg-neutral-900 text-white
-            rounded-full
-            text-sm font-semibold tracking-[0.2em] uppercase
-            shadow-lg shadow-neutral-900/20
-            transition-all duration-300
-            hover:scale-105 hover:shadow-xl hover:shadow-neutral-900/30
-            active:scale-100
-            cursor-pointer
-          "
-        >
-          View Projects
-        </button>
-      </motion.div>
     </section>
   );
 }
