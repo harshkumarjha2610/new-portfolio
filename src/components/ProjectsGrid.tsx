@@ -4,184 +4,245 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
-export interface ProjectItem {
+export interface BentoProject {
   id: string;
+  num: string;
+  tag: string;
   title: string;
-  category: string;
-  description: string;
-  tags: string[];
+  description?: string;
+  pillText?: string;
+  buttonText?: string;
   imageSrc: string;
-  videoSrc?: string; // Future scope: video support
-  colSpan: string; // Tailwind grid span classes
-  aspectRatio: string;
+  videoSrc?: string;
+  category: string;
   year: string;
-  link?: string;
+  tags: string[];
 }
 
-const PROJECTS: ProjectItem[] = [
-  {
-    id: "neurocore-ai",
-    title: "NeuroCore AI Analytics",
-    category: "AI & Machine Learning",
-    description:
-      "A next-generation AI dashboard featuring real-time telemetry, model performance metrics, and automated neural network insights.",
-    tags: ["Next.js", "AI/ML", "TailwindCSS", "Framer Motion"],
-    imageSrc: "/photos/project_ai_platform.jpg",
-    colSpan: "lg:col-span-8 col-span-12",
-    aspectRatio: "aspect-video md:aspect-[16/9]",
+const BENTO_PROJECTS: Record<string, BentoProject> = {
+  bento1: {
+    id: "bento1",
+    num: "01/",
+    tag: "Found in Curiosity",
+    title: "Great Questions\nUnearth\nHidden Gems",
+    description: "An AI-powered neural exploratory search platform uncovering hidden insights across vast unstructured data.",
+    pillText: "The best answers come from asking the right questions. Start your search with purpose today.",
+    imageSrc: "/photos/bento_01_face.jpg",
+    category: "AI & Neural Search",
     year: "2025",
-    link: "#",
+    tags: ["Next.js 15", "AI Search", "TailwindCSS", "Framer Motion"],
   },
-  {
-    id: "aurelia-luxury",
-    title: "Aurélia Luxury Fashion",
-    category: "Mobile & E-Commerce",
-    description:
-      "Editorial digital boutique and high-fashion mobile app experience with fluid micro-interactions and dark luxury aesthetic.",
-    tags: ["React Native", "E-Commerce", "Design System"],
-    imageSrc: "/photos/project_luxury_brand.jpg",
-    colSpan: "lg:col-span-4 col-span-12",
-    aspectRatio: "aspect-[3/4] md:aspect-[3/4]",
+  bento2: {
+    id: "bento2",
+    num: "02/",
+    tag: "Where Knowledge Begins",
+    title: "Where Knowledge Begins",
+    description: "Cinematic real-time WebGL visualization engine mapping multidimensional data paths across twilight terrain.",
+    imageSrc: "/photos/bento_02_dunes.jpg",
+    category: "3D WebGL & Canvas",
     year: "2025",
-    link: "#",
+    tags: ["Three.js", "WebGL", "GLSL Shaders", "Data Viz"],
   },
-  {
-    id: "kinetic-webgl",
-    title: "Kinetic 3D WebGL Engine",
-    category: "Interactive 3D & WebGL",
-    description:
-      "Real-time interactive WebGL geometric liquid shader simulation built with custom GLSL shaders and Three.js.",
-    tags: ["Three.js", "WebGL", "GLSL Shaders", "Canvas"],
+  bento3: {
+    id: "bento3",
+    num: "03/",
+    tag: "In Real Time",
+    title: "In Real Time",
+    description: "From complex topics to quick facts, trust what you learn from every search you perform.",
+    buttonText: "Start Using Nexora",
     imageSrc: "/photos/project_3d_webgl.jpg",
-    colSpan: "lg:col-span-5 col-span-12",
-    aspectRatio: "aspect-[4/3] md:aspect-[4/3]",
+    category: "Interactive Simulation",
     year: "2024",
-    link: "#",
+    tags: ["TypeScript", "WebSockets", "Interactive UI"],
   },
-  {
-    id: "quantum-trade",
-    title: "QuantumTrade Crypto Terminal",
-    category: "Fintech & Data Viz",
-    description:
-      "Ultra-low latency crypto & stock market dashboard rendering millions of live data points with WebGL charts.",
-    tags: ["TypeScript", "WebSockets", "D3.js", "Fintech"],
+  bento4: {
+    id: "bento4",
+    num: "04/",
+    tag: "Just Ask",
+    title: "Users Trust Our Search Models",
+    description: "Next-gen predictive AI search engine trusted by over 100K active researchers worldwide.",
     imageSrc: "/photos/project_fintech_app.jpg",
-    colSpan: "lg:col-span-7 col-span-12",
-    aspectRatio: "aspect-video md:aspect-[16/9]",
+    category: "Fintech & Analytics",
     year: "2024",
-    link: "#",
+    tags: ["Fintech", "Predictive ML", "Real-Time Data"],
   },
-];
+};
 
 export default function ProjectsGrid() {
-  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const [selectedProject, setSelectedProject] = useState<BentoProject | null>(null);
 
   return (
-    <section id="projects-grid" className="w-full bg-black text-white py-24 px-6 md:px-12 relative overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-900/10 rounded-full blur-[140px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 border-b border-white/10 pb-8">
+    <section id="projects" className="w-full bg-black text-white py-20 px-6 sm:px-10 lg:px-16 font-sans">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
           <div>
-            <span className="text-xs font-mono tracking-[0.3em] text-emerald-400 uppercase block mb-3">
-              [ Selected Projects & Works ]
-            </span>
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-white">
-              Featured Work
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-white mb-2 leading-tight">
+              Curiosity-led tools for truth-seeking minds.
             </h2>
+            <p className="text-xl sm:text-3xl lg:text-4xl font-normal tracking-tight text-[#888888]">
+              Ask with confidence. Powered by AI.
+            </p>
           </div>
-          <p className="text-white/60 max-w-md text-sm md:text-base leading-relaxed">
-            Explorations in high-performance web applications, interactive 3D WebGL visuals, and modern AI dashboard interfaces.
-          </p>
+
+          <a
+            href="#contact"
+            className="self-start lg:self-auto shrink-0 bg-white/5 border border-white/20 hover:bg-white hover:text-black transition-all duration-300 rounded-full px-6 py-3 text-sm font-medium tracking-wide backdrop-blur-md"
+          >
+            Start Using Nexora
+          </a>
         </div>
 
-        {/* Asymmetric Bento Grid (Blocks with different dimensions) */}
-        <div className="grid grid-cols-12 gap-6 lg:gap-8">
-          {PROJECTS.map((project, idx) => (
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+          {/* ── Block 01: Left Tall Column (Spans 5 cols on lg) ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            onClick={() => setSelectedProject(BENTO_PROJECTS.bento1)}
+            className="lg:col-span-5 relative rounded-[28px] overflow-hidden min-h-[580px] lg:min-h-[640px] flex flex-col justify-between p-6 sm:p-8 bg-neutral-900 border border-white/10 hover:border-white/30 transition-all duration-500 group cursor-pointer shadow-2xl"
+          >
+            {/* Background Image */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+              <Image
+                src={BENTO_PROJECTS.bento1.imageSrc}
+                alt={BENTO_PROJECTS.bento1.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+            </div>
+
+            {/* Top Header Row */}
+            <div className="relative z-10 flex justify-between items-center text-sm font-mono text-white/70 tracking-wider">
+              <span>{BENTO_PROJECTS.bento1.num}</span>
+              <span>{BENTO_PROJECTS.bento1.tag}</span>
+            </div>
+
+            {/* Bottom Content */}
+            <div className="relative z-10 mt-auto">
+              <h3 className="text-3xl sm:text-4xl font-normal tracking-tight text-white whitespace-pre-line leading-[1.15] mb-6">
+                {BENTO_PROJECTS.bento1.title}
+              </h3>
+
+              {/* Glassmorphism Subtitle Pill Container */}
+              <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 text-xs sm:text-sm text-white/90 font-normal leading-relaxed">
+                {BENTO_PROJECTS.bento1.pillText}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ── Right Column Container (Spans 7 cols on lg) ── */}
+          <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-6">
+            {/* ── Block 02: Top Wide Landscape Card ── */}
             <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.1 }}
-              onClick={() => setSelectedProject(project)}
-              className={`${project.colSpan} group relative rounded-3xl overflow-hidden bg-neutral-900/60 border border-white/10 hover:border-white/30 transition-all duration-500 cursor-pointer shadow-2xl flex flex-col justify-end min-h-[380px] lg:min-h-[440px]`}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              onClick={() => setSelectedProject(BENTO_PROJECTS.bento2)}
+              className="relative rounded-[28px] overflow-hidden h-[280px] sm:h-[320px] flex flex-col justify-between p-6 sm:p-8 bg-neutral-900 border border-white/10 hover:border-white/30 transition-all duration-500 group cursor-pointer shadow-2xl"
             >
-              {/* Media Container (Image now, supports Video on hover when videoSrc provided) */}
+              {/* Background Image */}
               <div className="absolute inset-0 z-0 overflow-hidden">
-                {project.videoSrc ? (
-                  <video
-                    src={project.videoSrc}
-                    poster={project.imageSrc}
-                    muted
-                    loop
-                    playsInline
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                    onMouseEnter={(e) => e.currentTarget.play()}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.pause();
-                      e.currentTarget.currentTime = 0;
-                    }}
-                  />
-                ) : (
-                  <Image
-                    src={project.imageSrc}
-                    alt={project.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100"
-                  />
-                )}
-                {/* Gradient Overlays for readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90 group-hover:opacity-75 transition-opacity duration-500" />
+                <Image
+                  src={BENTO_PROJECTS.bento2.imageSrc}
+                  alt={BENTO_PROJECTS.bento2.title}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
               </div>
 
-              {/* Top Tag / Year */}
-              <div className="relative z-10 p-6 sm:p-8 flex justify-between items-start">
-                <span className="text-xs font-mono px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white/80">
-                  {project.category}
-                </span>
-                <span className="text-xs font-mono text-white/50 bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-md">
-                  {project.year}
-                </span>
-              </div>
-
-              {/* Spacer */}
-              <div className="flex-1" />
-
-              {/* Bottom Details */}
-              <div className="relative z-10 p-6 sm:p-8 transform group-hover:translate-y-0 transition-transform duration-300">
-                <div className="flex items-center justify-between gap-4 mb-2">
-                  <h3 className="text-2xl sm:text-3xl font-semibold text-white group-hover:text-emerald-300 transition-colors">
-                    {project.title}
-                  </h3>
-                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:bg-emerald-500 group-hover:text-black group-hover:border-emerald-400 transition-all duration-300 shrink-0">
-                    <svg className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17L17 7M17 7H7M17 7V17" />
-                    </svg>
-                  </div>
-                </div>
-
-                <p className="text-sm text-white/70 line-clamp-2 mb-4 font-normal leading-relaxed">
-                  {project.description}
-                </p>
-
-                {/* Tech Tags */}
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[11px] font-mono text-emerald-300/90 bg-emerald-950/40 border border-emerald-500/20 px-2.5 py-1 rounded-md"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+              {/* Top Header Row */}
+              <div className="relative z-10 flex justify-between items-center w-full">
+                <h3 className="text-2xl sm:text-3xl font-normal tracking-tight text-white">
+                  {BENTO_PROJECTS.bento2.title}
+                </h3>
+                <span className="text-sm font-mono text-white/70">{BENTO_PROJECTS.bento2.num}</span>
               </div>
             </motion.div>
-          ))}
+
+            {/* ── Bottom Row: 2 Cards Side-by-Side ── */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 flex-1">
+              {/* ── Block 03: Bottom Middle Card ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                onClick={() => setSelectedProject(BENTO_PROJECTS.bento3)}
+                className="relative rounded-[28px] overflow-hidden min-h-[280px] sm:min-h-[300px] flex flex-col justify-between p-6 bg-neutral-900 border border-white/10 hover:border-white/30 transition-all duration-500 group cursor-pointer shadow-2xl"
+              >
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0 overflow-hidden">
+                  <Image
+                    src={BENTO_PROJECTS.bento3.imageSrc}
+                    alt={BENTO_PROJECTS.bento3.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 30vw"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-75 group-hover:opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
+                </div>
+
+                {/* Top Header Row */}
+                <div className="relative z-10 flex justify-between items-center text-xs font-mono text-white/70 tracking-wider">
+                  <span>{BENTO_PROJECTS.bento3.tag}</span>
+                  <span>{BENTO_PROJECTS.bento3.num}</span>
+                </div>
+
+                {/* Content & Pill Button */}
+                <div className="relative z-10 mt-auto">
+                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed mb-5 max-w-[240px]">
+                    {BENTO_PROJECTS.bento3.description}
+                  </p>
+                  <span className="inline-block text-xs font-medium text-white bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 group-hover:bg-white group-hover:text-black transition-all duration-300">
+                    {BENTO_PROJECTS.bento3.buttonText}
+                  </span>
+                </div>
+              </motion.div>
+
+              {/* ── Block 04: Bottom Right Card ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                onClick={() => setSelectedProject(BENTO_PROJECTS.bento4)}
+                className="relative rounded-[28px] overflow-hidden min-h-[280px] sm:min-h-[300px] flex flex-col justify-between p-6 bg-neutral-900 border border-white/10 hover:border-white/30 transition-all duration-500 group cursor-pointer shadow-2xl"
+              >
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0 overflow-hidden">
+                  <Image
+                    src={BENTO_PROJECTS.bento4.imageSrc}
+                    alt={BENTO_PROJECTS.bento4.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 30vw"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-75 group-hover:opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
+                </div>
+
+                {/* Top Header Row */}
+                <div className="relative z-10 flex justify-between items-center text-xs font-mono text-white/70 tracking-wider">
+                  <span>{BENTO_PROJECTS.bento4.tag}</span>
+                  <span>{BENTO_PROJECTS.bento4.num}</span>
+                </div>
+
+                {/* Bottom Title */}
+                <div className="relative z-10 mt-auto">
+                  <h4 className="text-sm sm:text-base font-normal text-white/90 leading-snug">
+                    {BENTO_PROJECTS.bento4.title}
+                  </h4>
+                </div>
+              </motion.div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -202,7 +263,7 @@ export default function ProjectsGrid() {
               onClick={(e) => e.stopPropagation()}
               className="bg-neutral-900 border border-white/15 rounded-2xl max-w-xl w-full overflow-hidden relative text-white shadow-2xl max-h-[85vh] flex flex-col"
             >
-              {/* Close Button */}
+              {/* Top-Right Cross Button Only */}
               <button
                 onClick={() => setSelectedProject(null)}
                 className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/70 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors text-sm"
@@ -231,14 +292,9 @@ export default function ProjectsGrid() {
                   <span className="text-[11px] font-mono text-white/50">
                     Year: {selectedProject.year}
                   </span>
-                  {/* Future video indicator badge */}
-                  <span className="text-[11px] font-mono text-purple-300 bg-purple-950/40 border border-purple-500/30 px-2 py-0.5 rounded-full flex items-center gap-1.5 ml-auto">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                    Video Ready
-                  </span>
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-bold mb-2 text-white">
+                <h3 className="text-xl sm:text-2xl font-bold mb-2 text-white whitespace-pre-line">
                   {selectedProject.title}
                 </h3>
                 <p className="text-white/80 text-xs sm:text-sm leading-relaxed mb-4">
