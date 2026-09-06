@@ -29,7 +29,7 @@ const DEFAULTS = {
   dots: true,
   dotOptions: { count: 8000, size: 20, color: "#ffffff", glow: 10, flicker: 10 },
   comets: true,
-  cometOptions: { count: 10, speed: 6, color: "#F9731A", glow: 6, tail: 19, delay: 8, collide: 6 },
+  cometOptions: { count: 10, speed: 6, color: "#b84a02ff", glow: 6, tail: 19, delay: 8, collide: 6 },
   repel: false,
   repelOptions: { radius: 60, strength: 10 },
 };
@@ -127,9 +127,9 @@ type Shape = ReturnType<typeof makeShape>;
 function makeShape(cfg: Record<string, number>) {
   const w = clamp(cfg.waistAt, 0.08, 0.92);
   const floor = cfg.floorRadius, crown = cfg.crownRadius, turn = cfg.twist * TAU;
-  const radius = bake(monotone([[0,floor],[0.24*w,floor*0.667],[0.5*w,floor*0.3],[0.76*w,floor*0.08],[w,cfg.waistRadius],[w+0.3*(1-w),crown*0.2],[w+0.6*(1-w),crown*0.44],[1,crown]]));
-  const height = bake(monotone([[0,0],[0.1,0.2],[0.2,0.8],[0.35,2],[0.5,FORM_HEIGHT*0.38],[0.75,FORM_HEIGHT*0.7],[1,FORM_HEIGHT]]));
-  const angle = bake(monotone([[0,0],[0.15,0.15*turn],[0.25,0.25*turn],[0.45,0.55*turn],[0.6,0.7*turn],[0.8,0.88*turn],[1,turn]]));
+  const radius = bake(monotone([[0, floor], [0.24 * w, floor * 0.667], [0.5 * w, floor * 0.3], [0.76 * w, floor * 0.08], [w, cfg.waistRadius], [w + 0.3 * (1 - w), crown * 0.2], [w + 0.6 * (1 - w), crown * 0.44], [1, crown]]));
+  const height = bake(monotone([[0, 0], [0.1, 0.2], [0.2, 0.8], [0.35, 2], [0.5, FORM_HEIGHT * 0.38], [0.75, FORM_HEIGHT * 0.7], [1, FORM_HEIGHT]]));
+  const angle = bake(monotone([[0, 0], [0.15, 0.15 * turn], [0.25, 0.25 * turn], [0.45, 0.55 * turn], [0.6, 0.7 * turn], [0.8, 0.88 * turn], [1, turn]]));
   return {
     writePoint(out: Float32Array, at: number, s: number, lane: number, flow: number, wobble: number, phase: number, time: number) {
       const r = sample(radius, s), y = sample(height, s), a = sample(angle, s) + lane + flow;
@@ -140,7 +140,7 @@ function makeShape(cfg: Record<string, number>) {
   };
 }
 
-type VortexAPI = { rebuild: () => void; dispose: () => void; canvas: HTMLCanvasElement };
+type VortexAPI = { rebuild: () => void; dispose: () => void };
 
 function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef: { current: Record<string, unknown> }): VortexAPI {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -149,7 +149,7 @@ function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef:
   renderer.toneMapping = THREE.ReinhardToneMapping;
   renderer.toneMappingExposure = 1.25;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(fovForZoom((cfgRef.current as {zoom:number}).zoom), 1, 0.1, 500);
+  const camera = new THREE.PerspectiveCamera(fovForZoom((cfgRef.current as { zoom: number }).zoom), 1, 0.1, 500);
   const group = new THREE.Group();
   scene.add(group);
 
@@ -173,10 +173,10 @@ function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef:
     return material;
   };
 
-  type Strand = { lane:number;speed:number;pulse:number;wobblePhase:number;from:number;to:number;bright:number;offset:number;pts:Float32Array;cols:Float32Array };
-  type Dot = { s:number;lane:number;strand:number;pulse:number;flickerRate:number;bright:number };
-  type Comet = { bright:number;lane:number;speed:number;pulse:number;wobblePhase:number;base:number;boost:number;boostMul:number;racing:boolean;s:number;idle:number;idleFor:number;trail:Float32Array;trailCol:Float32Array;geo:THREE.BufferGeometry;line:THREE.Line;head:THREE.Sprite };
-  type Wave = { active:boolean;x:number;y:number;z:number;at:number;amp:number };
+  type Strand = { lane: number; speed: number; pulse: number; wobblePhase: number; from: number; to: number; bright: number; offset: number; pts: Float32Array; cols: Float32Array };
+  type Dot = { s: number; lane: number; strand: number; pulse: number; flickerRate: number; bright: number };
+  type Comet = { bright: number; lane: number; speed: number; pulse: number; wobblePhase: number; base: number; boost: number; boostMul: number; racing: boolean; s: number; idle: number; idleFor: number; trail: Float32Array; trailCol: Float32Array; geo: THREE.BufferGeometry; line: THREE.Line; head: THREE.Sprite };
+  type Wave = { active: boolean; x: number; y: number; z: number; at: number; amp: number };
 
   let shape: Shape;
   let disposables: { dispose: () => void }[] = [];
@@ -205,7 +205,7 @@ function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef:
     if (cfg.dotColor !== lastColors.dot) { tint.dot.set(cfg.dotColor as string); lastColors.dot = cfg.dotColor as string; }
     if (cfg.cometColor !== lastColors.comet) {
       tint.comet.set(cfg.cometColor as string); lastColors.comet = cfg.cometColor as string;
-      for (const c of cometList) (c.head.material as THREE.SpriteMaterial).color.setRGB(tint.comet.r*1.2, tint.comet.g*1.2, tint.comet.b*1.2);
+      for (const c of cometList) (c.head.material as THREE.SpriteMaterial).color.setRGB(tint.comet.r * 1.2, tint.comet.g * 1.2, tint.comet.b * 1.2);
     }
   }
 
@@ -213,9 +213,9 @@ function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef:
     const c = document.createElement("canvas"); c.width = c.height = size;
     const ctx2d = c.getContext("2d");
     if (ctx2d) {
-      const g = ctx2d.createRadialGradient(size/2,size/2,0,size/2,size/2,size/2);
+      const g = ctx2d.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
       for (const [at, color] of stops) g.addColorStop(at, color);
-      ctx2d.fillStyle = g; ctx2d.fillRect(0,0,size,size);
+      ctx2d.fillStyle = g; ctx2d.fillRect(0, 0, size, size);
     }
     const tex = new THREE.Texture(c); tex.needsUpdate = true; return tex;
   }
@@ -243,23 +243,23 @@ function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef:
 
     strands = [];
     for (let i = 0; i < count; i++) {
-      strands.push({ lane: shape.lane(i, count), speed: 0.95 + Math.random()*0.1, pulse: Math.random()*TAU, wobblePhase: Math.random()*TAU, from: 0, to: 1, bright: 0.5, offset: i*segs*2*3, pts: new Float32Array(STRAND_SEGMENTS*3), cols: new Float32Array(STRAND_SEGMENTS*3) });
+      strands.push({ lane: shape.lane(i, count), speed: 0.95 + Math.random() * 0.1, pulse: Math.random() * TAU, wobblePhase: Math.random() * TAU, from: 0, to: 1, bright: 0.5, offset: i * segs * 2 * 3, pts: new Float32Array(STRAND_SEGMENTS * 3), cols: new Float32Array(STRAND_SEGMENTS * 3) });
     }
 
     dotCount = (cfg.showDots as boolean) ? Math.max(0, Math.round(cfg.dotCount as number)) : 0;
     dotList = [];
     for (let i = 0; i < dotCount; i++) {
-      const s = Math.random() < 0.5 ? 0.2 + Math.random()*0.4 : 0.05 + Math.random()*0.9;
+      const s = Math.random() < 0.5 ? 0.2 + Math.random() * 0.4 : 0.05 + Math.random() * 0.9;
       const strand = Math.floor(Math.random() * strands.length);
-      dotList.push({ s, lane: strands[strand].lane, strand, pulse: Math.random()*TAU, flickerRate: 0.15 + Math.random()*4.5, bright: 0.04 + Math.random()**1.5*0.96 });
+      dotList.push({ s, lane: strands[strand].lane, strand, pulse: Math.random() * TAU, flickerRate: 0.15 + Math.random() * 4.5, bright: 0.04 + Math.random() ** 1.5 * 0.96 });
     }
-    dotHome = new Float32Array(dotCount*3); dotShift = new Float32Array(dotCount*3);
-    dotVel = new Float32Array(dotCount*3); dotScale = new Float32Array(dotCount).fill(1);
+    dotHome = new Float32Array(dotCount * 3); dotShift = new Float32Array(dotCount * 3);
+    dotVel = new Float32Array(dotCount * 3); dotScale = new Float32Array(dotCount).fill(1);
     dotScaleVel = new Float32Array(dotCount); dotHitAt = new Float32Array(dotCount);
     dotFlash = new Float32Array(dotCount); dotAlive = new Float32Array(dotCount).fill(1);
-    dotColors = new Float32Array(dotCount*3); rippleAwake = false;
+    dotColors = new Float32Array(dotCount * 3); rippleAwake = false;
     if (dotCount > 0) {
-      const dotGeo = track(new THREE.PlaneGeometry(1,1));
+      const dotGeo = track(new THREE.PlaneGeometry(1, 1));
       const dotMat = track(withRepel(new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false })));
       dotMesh = new THREE.InstancedMesh(dotGeo, dotMat, dotCount);
       dotMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -269,26 +269,26 @@ function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef:
     } else { dotMesh = null; }
 
     waves = [];
-    for (let i = 0; i < MAX_WAVES; i++) waves.push({ active: false, x:0, y:0, z:0, at:0, amp:1 });
+    for (let i = 0; i < MAX_WAVES; i++) waves.push({ active: false, x: 0, y: 0, z: 0, at: 0, amp: 1 });
     wavesAwake = false;
 
-    cometTex = track(blob(32, [[0,"rgba(255,255,255,0.9)"],[0.3,"rgba(255,120,255,0.4)"],[0.7,"rgba(200,50,200,0.08)"],[1,"rgba(0,0,0,0)"]]));
+    cometTex = track(blob(32, [[0, "rgba(255,255,255,0.9)"], [0.3, "rgba(255,120,255,0.4)"], [0.7, "rgba(200,50,200,0.08)"], [1, "rgba(0,0,0,0)"]]));
     const cometTotal = (cfg.showComets as boolean) ? Math.max(0, Math.round(cfg.cometCount as number)) : 0;
     const tailLen = Math.max(2, Math.round(cfg.cometTail as number));
     cometList = [];
     for (let i = 0; i < cometTotal; i++) {
-      const trail = new Float32Array(tailLen*3), trailCol = new Float32Array(tailLen*3);
+      const trail = new Float32Array(tailLen * 3), trailCol = new Float32Array(tailLen * 3);
       const geo = track(new THREE.BufferGeometry());
-      geo.setAttribute("position", new THREE.BufferAttribute(trail,3).setUsage(THREE.DynamicDrawUsage));
-      geo.setAttribute("color", new THREE.BufferAttribute(trailCol,3).setUsage(THREE.DynamicDrawUsage));
-      const lineMat = track(withRepel(new THREE.LineBasicMaterial({ vertexColors:true, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite:false })));
+      geo.setAttribute("position", new THREE.BufferAttribute(trail, 3).setUsage(THREE.DynamicDrawUsage));
+      geo.setAttribute("color", new THREE.BufferAttribute(trailCol, 3).setUsage(THREE.DynamicDrawUsage));
+      const lineMat = track(withRepel(new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false })));
       const line = new THREE.Line(geo, lineMat); line.frustumCulled = false;
-      const headMat = track(new THREE.SpriteMaterial({ map: cometTex, transparent:true, opacity:0, blending:THREE.AdditiveBlending, depthWrite:false, color: new THREE.Color(tint.comet.r*1.2, tint.comet.g*1.2, tint.comet.b*1.2) }));
-      const head = new THREE.Sprite(headMat); head.scale.set(0.35,0.35,1);
+      const headMat = track(new THREE.SpriteMaterial({ map: cometTex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, color: new THREE.Color(tint.comet.r * 1.2, tint.comet.g * 1.2, tint.comet.b * 1.2) }));
+      const head = new THREE.Sprite(headMat); head.scale.set(0.35, 0.35, 1);
       group.add(line); group.add(head);
-      const home = strands[Math.floor(Math.random()*strands.length)];
-      const speed = (cfg.cometSpeed as number) * (0.7 + Math.random()*0.6);
-      cometList.push({ bright:0.7+Math.random()*0.3, lane:home.lane, speed, pulse:home.speed, wobblePhase:home.wobblePhase, base:speed, boost:0, boostMul:1, racing:false, s:0, idle:0, idleFor:0.4+(i/cometTotal)*(cfg.cometDelay as number), trail, trailCol, geo, line, head });
+      const home = strands[Math.floor(Math.random() * strands.length)];
+      const speed = (cfg.cometSpeed as number) * (0.7 + Math.random() * 0.6);
+      cometList.push({ bright: 0.7 + Math.random() * 0.3, lane: home.lane, speed, pulse: home.speed, wobblePhase: home.wobblePhase, base: speed, boost: 0, boostMul: 1, racing: false, s: 0, idle: 0, idleFor: 0.4 + (i / cometTotal) * (cfg.cometDelay as number), trail, trailCol, geo, line, head });
     }
     born = 0; resize();
   }
@@ -308,7 +308,7 @@ function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef:
     camera.aspect = w / h; camera.updateProjectionMatrix();
     repelUniforms.uAspect.value = w / h;
     repelUniforms.uRadius.value = clamp(cfg.repelRadius / (h / 2), 0.01, 3);
-    if (!(cfgRef.current as {running:boolean}).running) renderer.render(scene, camera);
+    if (!(cfgRef.current as { running: boolean }).running) renderer.render(scene, camera);
   }
   const observer = new ResizeObserver(resize);
 
@@ -317,28 +317,28 @@ function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef:
     const cfg = cfgRef.current as Record<string, unknown>;
     const rect = container.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
-    repelUniforms.uMouse.value.set(((e.clientX-rect.left)/rect.width)*2-1, -(((e.clientY-rect.top)/rect.height)*2-1));
-    repelTarget = (cfg.hoverRepel as boolean) && (cfg.running as boolean) ? clamp((cfg.repelStrength as number)/100, 0, 1)*REPEL_MAX_NDC : 0;
+    repelUniforms.uMouse.value.set(((e.clientX - rect.left) / rect.width) * 2 - 1, -(((e.clientY - rect.top) / rect.height) * 2 - 1));
+    repelTarget = (cfg.hoverRepel as boolean) && (cfg.running as boolean) ? clamp((cfg.repelStrength as number) / 100, 0, 1) * REPEL_MAX_NDC : 0;
   };
   const onPointerLeave = () => { repelTarget = 0; };
   container.addEventListener("pointermove", onPointerMove);
   container.addEventListener("pointerleave", onPointerLeave);
   container.addEventListener("pointercancel", onPointerLeave);
 
-  function addWave(x:number,y:number,z:number,at:number,amp:number){wavesAwake=true;let slot=0,oldest=Infinity;for(let i=0;i<MAX_WAVES;i++){if(!waves[i].active){slot=i;break;}if(waves[i].at<oldest){oldest=waves[i].at;slot=i;}}waves[slot]={active:true,x,y,z,at,amp};}
-  function waveAt(x:number,y:number,z:number,now:number,out:Float32Array,at:number,radius:number){let ox=0,oy=0,oz=0,any=false;for(let i=0;i<MAX_WAVES;i++){const w=waves[i];if(!w.active)continue;const age=now-w.at;if(age>WAVE_LIFE){w.active=false;continue;}any=true;const dx=x-w.x,dy=y-w.y,dz=z-w.z,d=Math.sqrt(dx*dx+dy*dy+dz*dz);if(d<0.001||d>radius*1.5)continue;const front=Math.abs(d-WAVE_SPEED*age);if(front>WAVE_WIDTH)continue;const shell=Math.cos((front/WAVE_WIDTH*Math.PI)/2),fade=Math.exp(-age/WAVE_DECAY),near=1/Math.max(d,0.3),push=RIPPLE_STRENGTH*w.amp*WAVE_STRENGTH*shell*fade*near;ox+=dx/d*push;oy+=dy/d*push;oz+=dz/d*push;}if(!any)wavesAwake=false;out[at]+=ox;out[at+1]+=oy;out[at+2]+=oz;}
-  function burstAt(i:number,now:number,force:number){rippleAwake=true;const x=dotHome[i*3],y=dotHome[i*3+1],z=dotHome[i*3+2];addWave(x,y,z,now,force);const maxSq=RIPPLE_RADIUS*RIPPLE_RADIUS;for(let j=0;j<dotCount;j++){const dx=dotHome[j*3]-x,dy=dotHome[j*3+1]-y,dz=dotHome[j*3+2]-z,sq=dx*dx+dy*dy+dz*dz;if(sq>maxSq||sq<1e-4)continue;const d=Math.sqrt(sq),f=1-d/RIPPLE_RADIUS,push=RIPPLE_STRENGTH*force*f*f/Math.max(d,0.1);dotVel[j*3]+=dx*push;dotVel[j*3+1]+=dy*push;dotVel[j*3+2]+=dz*push;const swell=1+(SCALE_PEAK-1)*force*f*f;if(swell>dotScale[j]){dotScale[j]=swell;dotScaleVel[j]=0;}}}
-  function settle(dt:number){let moving=false;for(let i=0;i<dotCount;i++){const at=i*3;for(let k=0;k<3;k++){const a=-RIPPLE_SPRING*dotShift[at+k]-RIPPLE_DAMPING*dotVel[at+k];dotVel[at+k]+=a*dt;dotShift[at+k]+=dotVel[at+k]*dt;}const restSq=dotShift[at]**2+dotShift[at+1]**2+dotShift[at+2]**2,velSq=dotVel[at]**2+dotVel[at+1]**2+dotVel[at+2]**2;if(restSq<1e-8&&velSq<1e-8){dotShift[at]=dotShift[at+1]=dotShift[at+2]=dotVel[at]=dotVel[at+1]=dotVel[at+2]=0;}else{moving=true;}const sa=-SCALE_SPRING*(dotScale[i]-1)-SCALE_DAMPING*dotScaleVel[i];dotScaleVel[i]+=sa*dt;dotScale[i]+=dotScaleVel[i]*dt;if(Math.abs(dotScale[i]-1)<0.001&&Math.abs(dotScaleVel[i])<0.001){dotScale[i]=1;dotScaleVel[i]=0;}else{moving=true;}}if(!moving)rippleAwake=false;}
+  function addWave(x: number, y: number, z: number, at: number, amp: number) { wavesAwake = true; let slot = 0, oldest = Infinity; for (let i = 0; i < MAX_WAVES; i++) { if (!waves[i].active) { slot = i; break; } if (waves[i].at < oldest) { oldest = waves[i].at; slot = i; } } waves[slot] = { active: true, x, y, z, at, amp }; }
+  function waveAt(x: number, y: number, z: number, now: number, out: Float32Array, at: number, radius: number) { let ox = 0, oy = 0, oz = 0, any = false; for (let i = 0; i < MAX_WAVES; i++) { const w = waves[i]; if (!w.active) continue; const age = now - w.at; if (age > WAVE_LIFE) { w.active = false; continue; } any = true; const dx = x - w.x, dy = y - w.y, dz = z - w.z, d = Math.sqrt(dx * dx + dy * dy + dz * dz); if (d < 0.001 || d > radius * 1.5) continue; const front = Math.abs(d - WAVE_SPEED * age); if (front > WAVE_WIDTH) continue; const shell = Math.cos((front / WAVE_WIDTH * Math.PI) / 2), fade = Math.exp(-age / WAVE_DECAY), near = 1 / Math.max(d, 0.3), push = RIPPLE_STRENGTH * w.amp * WAVE_STRENGTH * shell * fade * near; ox += dx / d * push; oy += dy / d * push; oz += dz / d * push; } if (!any) wavesAwake = false; out[at] += ox; out[at + 1] += oy; out[at + 2] += oz; }
+  function burstAt(i: number, now: number, force: number) { rippleAwake = true; const x = dotHome[i * 3], y = dotHome[i * 3 + 1], z = dotHome[i * 3 + 2]; addWave(x, y, z, now, force); const maxSq = RIPPLE_RADIUS * RIPPLE_RADIUS; for (let j = 0; j < dotCount; j++) { const dx = dotHome[j * 3] - x, dy = dotHome[j * 3 + 1] - y, dz = dotHome[j * 3 + 2] - z, sq = dx * dx + dy * dy + dz * dz; if (sq > maxSq || sq < 1e-4) continue; const d = Math.sqrt(sq), f = 1 - d / RIPPLE_RADIUS, push = RIPPLE_STRENGTH * force * f * f / Math.max(d, 0.1); dotVel[j * 3] += dx * push; dotVel[j * 3 + 1] += dy * push; dotVel[j * 3 + 2] += dz * push; const swell = 1 + (SCALE_PEAK - 1) * force * f * f; if (swell > dotScale[j]) { dotScale[j] = swell; dotScaleVel[j] = 0; } } }
+  function settle(dt: number) { let moving = false; for (let i = 0; i < dotCount; i++) { const at = i * 3; for (let k = 0; k < 3; k++) { const a = -RIPPLE_SPRING * dotShift[at + k] - RIPPLE_DAMPING * dotVel[at + k]; dotVel[at + k] += a * dt; dotShift[at + k] += dotVel[at + k] * dt; } const restSq = dotShift[at] ** 2 + dotShift[at + 1] ** 2 + dotShift[at + 2] ** 2, velSq = dotVel[at] ** 2 + dotVel[at + 1] ** 2 + dotVel[at + 2] ** 2; if (restSq < 1e-8 && velSq < 1e-8) { dotShift[at] = dotShift[at + 1] = dotShift[at + 2] = dotVel[at] = dotVel[at + 1] = dotVel[at + 2] = 0; } else { moving = true; } const sa = -SCALE_SPRING * (dotScale[i] - 1) - SCALE_DAMPING * dotScaleVel[i]; dotScaleVel[i] += sa * dt; dotScale[i] += dotScaleVel[i] * dt; if (Math.abs(dotScale[i] - 1) < 0.001 && Math.abs(dotScaleVel[i]) < 0.001) { dotScale[i] = 1; dotScaleVel[i] = 0; } else { moving = true; } } if (!moving) rippleAwake = false; }
 
-  let frame=0,born=0,elapsed=0,flow=0,strandClock=0,heldFrame=false,tick=0,lastTime=performance.now();
+  let frame = 0, born = 0, elapsed = 0, flow = 0, strandClock = 0, heldFrame = false, tick = 0, lastTime = performance.now();
 
-  function drawStrand(strand:Strand,now:number,entrance:number){const cfg=cfgRef.current as Record<string,number>;const spin=flow*strand.speed,bright=strand.bright*cfg.lineGlow,lift=0.15+bright*1.5;const alpha=Math.min(bright*0.5*(0.9+0.1*Math.sin(now*0.18+strand.pulse)),0.7)*Math.min(entrance*3,1);const reach=strand.from+entrance*(strand.to-strand.from),tipFade=0.15*(strand.to-strand.from);const{pts,cols}=strand;for(let i=0;i<STRAND_SEGMENTS;i++){const u=i/(STRAND_SEGMENTS-1),s=strand.from+u*(strand.to-strand.from),at=i*3;shape.writePoint(pts,at,s,strand.lane,spin,WOBBLE,strand.wobblePhase,now);if(wavesAwake)waveAt(pts[at],pts[at+1],pts[at+2],now,pts,at,RIPPLE_RADIUS);let edge=1;if(u<FADE_ZONE){const k=u/FADE_ZONE;edge=k*k;}else if(u>1-FADE_ZONE){const k=(1-u)/FADE_ZONE;edge=k*k;}let tip=1;if(s>reach)tip=0;else if(s>reach-tipFade){tip=(reach-s)/tipFade;tip*=tip;}const v=edge*lift*tip*alpha;cols[at]=tint.strand.r*v;cols[at+1]=tint.strand.g*v;cols[at+2]=tint.strand.b*v;}let w=strand.offset;for(let i=0;i<STRAND_SEGMENTS-1;i++){const a=i*3,b=(i+1)*3;strandPos[w]=pts[a];strandPos[w+1]=pts[a+1];strandPos[w+2]=pts[a+2];strandCol[w]=cols[a];strandCol[w+1]=cols[a+1];strandCol[w+2]=cols[a+2];w+=3;strandPos[w]=pts[b];strandPos[w+1]=pts[b+1];strandPos[w+2]=pts[b+2];strandCol[w]=cols[b];strandCol[w+1]=cols[b+1];strandCol[w+2]=cols[b+2];w+=3;}}
+  function drawStrand(strand: Strand, now: number, entrance: number) { const cfg = cfgRef.current as Record<string, number>; const spin = flow * strand.speed, bright = strand.bright * cfg.lineGlow, lift = 0.15 + bright * 1.5; const alpha = Math.min(bright * 0.5 * (0.9 + 0.1 * Math.sin(now * 0.18 + strand.pulse)), 0.7) * Math.min(entrance * 3, 1); const reach = strand.from + entrance * (strand.to - strand.from), tipFade = 0.15 * (strand.to - strand.from); const { pts, cols } = strand; for (let i = 0; i < STRAND_SEGMENTS; i++) { const u = i / (STRAND_SEGMENTS - 1), s = strand.from + u * (strand.to - strand.from), at = i * 3; shape.writePoint(pts, at, s, strand.lane, spin, WOBBLE, strand.wobblePhase, now); if (wavesAwake) waveAt(pts[at], pts[at + 1], pts[at + 2], now, pts, at, RIPPLE_RADIUS); let edge = 1; if (u < FADE_ZONE) { const k = u / FADE_ZONE; edge = k * k; } else if (u > 1 - FADE_ZONE) { const k = (1 - u) / FADE_ZONE; edge = k * k; } let tip = 1; if (s > reach) tip = 0; else if (s > reach - tipFade) { tip = (reach - s) / tipFade; tip *= tip; } const v = edge * lift * tip * alpha; cols[at] = tint.strand.r * v; cols[at + 1] = tint.strand.g * v; cols[at + 2] = tint.strand.b * v; } let w = strand.offset; for (let i = 0; i < STRAND_SEGMENTS - 1; i++) { const a = i * 3, b = (i + 1) * 3; strandPos[w] = pts[a]; strandPos[w + 1] = pts[a + 1]; strandPos[w + 2] = pts[a + 2]; strandCol[w] = cols[a]; strandCol[w + 1] = cols[a + 1]; strandCol[w + 2] = cols[a + 2]; w += 3; strandPos[w] = pts[b]; strandPos[w + 1] = pts[b + 1]; strandPos[w + 2] = pts[b + 2]; strandCol[w] = cols[b]; strandCol[w + 1] = cols[b + 1]; strandCol[w + 2] = cols[b + 2]; w += 3; } }
 
-  function driveComet(comet:Comet,now:number,dt:number,entrance:number){const cfg=cfgRef.current as Record<string,number>;const tailLen=comet.trail.length/3;if(!comet.racing){(comet.head.material as THREE.SpriteMaterial).opacity=0;if(entrance<0.3)return;comet.idle+=dt;if(comet.idle>comet.idleFor){comet.racing=true;comet.s=cfg.flowDir<0?RUN_HIGH:RUN_LOW;comet.base=cfg.cometSpeed*(0.7+Math.random()*0.6);comet.speed=comet.base;comet.boost=0;comet.boostMul=1;const home=strands[Math.floor(Math.random()*strands.length)];comet.lane=home.lane;comet.pulse=home.speed;comet.wobblePhase=home.wobblePhase;}return;}if(comet.boost>0){comet.boost-=dt;if(comet.boost<=0){comet.boost=0;comet.boostMul=1;}else{comet.boostMul=1+(HIT_BOOST-1)*(comet.boost/HIT_BOOST_TIME);}comet.speed=comet.base*comet.boostMul;}comet.s+=dt*comet.speed*cfg.flowDir;if(cfg.flowDir<0?comet.s<RUN_LOW:comet.s>RUN_HIGH){comet.racing=false;comet.idle=0;comet.idleFor=cfg.cometDelay*(0.6+Math.random()*0.8);comet.trailCol.fill(0);(comet.geo.attributes.color as THREE.BufferAttribute).needsUpdate=true;(comet.head.material as THREE.SpriteMaterial).opacity=0;return;}const spin=flow*comet.pulse,ends=clamp((comet.s-RUN_LOW)/RUN_FADE,0,1)*clamp((RUN_HIGH-comet.s)/RUN_FADE,0,1);for(let i=0;i<tailLen;i++){const s=clamp(comet.s-i*0.005*cfg.flowDir,0.005,0.995),at=i*3;shape.writePoint(comet.trail,at,s,comet.lane,spin,WOBBLE,comet.wobblePhase,now);const along=(1-i/tailLen)**2,v=comet.bright*cfg.cometGlow*along*ends,hot=entrance*(i<3?1.3:1);comet.trailCol[at]=tint.comet.r*v*hot;comet.trailCol[at+1]=tint.comet.g*v*hot;comet.trailCol[at+2]=tint.comet.b*v*hot;}comet.head.position.set(comet.trail[0],comet.trail[1],comet.trail[2]);const swell=comet.boost>0?1+(comet.boostMul-1)*0.8:1;(comet.head.material as THREE.SpriteMaterial).opacity=ends*0.35*entrance*swell;comet.head.scale.set(0.35*swell,0.35*swell,1);(comet.geo.attributes.position as THREE.BufferAttribute).needsUpdate=true;(comet.geo.attributes.color as THREE.BufferAttribute).needsUpdate=true;}
+  function driveComet(comet: Comet, now: number, dt: number, entrance: number) { const cfg = cfgRef.current as Record<string, number>; const tailLen = comet.trail.length / 3; if (!comet.racing) { (comet.head.material as THREE.SpriteMaterial).opacity = 0; if (entrance < 0.3) return; comet.idle += dt; if (comet.idle > comet.idleFor) { comet.racing = true; comet.s = cfg.flowDir < 0 ? RUN_HIGH : RUN_LOW; comet.base = cfg.cometSpeed * (0.7 + Math.random() * 0.6); comet.speed = comet.base; comet.boost = 0; comet.boostMul = 1; const home = strands[Math.floor(Math.random() * strands.length)]; comet.lane = home.lane; comet.pulse = home.speed; comet.wobblePhase = home.wobblePhase; } return; } if (comet.boost > 0) { comet.boost -= dt; if (comet.boost <= 0) { comet.boost = 0; comet.boostMul = 1; } else { comet.boostMul = 1 + (HIT_BOOST - 1) * (comet.boost / HIT_BOOST_TIME); } comet.speed = comet.base * comet.boostMul; } comet.s += dt * comet.speed * cfg.flowDir; if (cfg.flowDir < 0 ? comet.s < RUN_LOW : comet.s > RUN_HIGH) { comet.racing = false; comet.idle = 0; comet.idleFor = cfg.cometDelay * (0.6 + Math.random() * 0.8); comet.trailCol.fill(0); (comet.geo.attributes.color as THREE.BufferAttribute).needsUpdate = true; (comet.head.material as THREE.SpriteMaterial).opacity = 0; return; } const spin = flow * comet.pulse, ends = clamp((comet.s - RUN_LOW) / RUN_FADE, 0, 1) * clamp((RUN_HIGH - comet.s) / RUN_FADE, 0, 1); for (let i = 0; i < tailLen; i++) { const s = clamp(comet.s - i * 0.005 * cfg.flowDir, 0.005, 0.995), at = i * 3; shape.writePoint(comet.trail, at, s, comet.lane, spin, WOBBLE, comet.wobblePhase, now); const along = (1 - i / tailLen) ** 2, v = comet.bright * cfg.cometGlow * along * ends, hot = entrance * (i < 3 ? 1.3 : 1); comet.trailCol[at] = tint.comet.r * v * hot; comet.trailCol[at + 1] = tint.comet.g * v * hot; comet.trailCol[at + 2] = tint.comet.b * v * hot; } comet.head.position.set(comet.trail[0], comet.trail[1], comet.trail[2]); const swell = comet.boost > 0 ? 1 + (comet.boostMul - 1) * 0.8 : 1; (comet.head.material as THREE.SpriteMaterial).opacity = ends * 0.35 * entrance * swell; comet.head.scale.set(0.35 * swell, 0.35 * swell, 1); (comet.geo.attributes.position as THREE.BufferAttribute).needsUpdate = true; (comet.geo.attributes.color as THREE.BufferAttribute).needsUpdate = true; }
 
-  function collide(now:number){const cfg=cfgRef.current as Record<string,number>;const force=cfg.collideForce;if(force<=0)return;const hitSq=HIT_RADIUS*HIT_RADIUS;for(const comet of cometList){if(!comet.racing)continue;const x=comet.trail[0],y=comet.trail[1],z=comet.trail[2];if(x===0&&y===0&&z===0)continue;for(let i=0;i<dotCount;i+=3){const dx=dotHome[i*3]-x,dy=dotHome[i*3+1]-y,dz=dotHome[i*3+2]-z,sq=dx*dx+dy*dy+dz*dz;if(sq<hitSq&&dotHitAt[i]===0){dotHitAt[i]=0.001;dotFlash[i]=HIT_FLASH*force;dotScale[i]=1+(HIT_POP-1)*force;burstAt(i,now,force);comet.boost=HIT_BOOST_TIME;comet.boostMul=1+(HIT_BOOST-1)*force;comet.speed=comet.base*comet.boostMul;}}}}
+  function collide(now: number) { const cfg = cfgRef.current as Record<string, number>; const force = cfg.collideForce; if (force <= 0) return; const hitSq = HIT_RADIUS * HIT_RADIUS; for (const comet of cometList) { if (!comet.racing) continue; const x = comet.trail[0], y = comet.trail[1], z = comet.trail[2]; if (x === 0 && y === 0 && z === 0) continue; for (let i = 0; i < dotCount; i += 3) { const dx = dotHome[i * 3] - x, dy = dotHome[i * 3 + 1] - y, dz = dotHome[i * 3 + 2] - z, sq = dx * dx + dy * dy + dz * dz; if (sq < hitSq && dotHitAt[i] === 0) { dotHitAt[i] = 0.001; dotFlash[i] = HIT_FLASH * force; dotScale[i] = 1 + (HIT_POP - 1) * force; burstAt(i, now, force); comet.boost = HIT_BOOST_TIME; comet.boostMul = 1 + (HIT_BOOST - 1) * force; comet.speed = comet.base * comet.boostMul; } } } }
 
-  function step(now:number){frame=requestAnimationFrame(step);const cfg=cfgRef.current as Record<string,unknown>;const dt=Math.min((now-lastTime)/1000,0.04);lastTime=now;if(!(cfg.running as boolean)){if(!heldFrame){renderer.render(scene,camera);heldFrame=true;}return;}heldFrame=false;if(born===0)born=now;elapsed=(now-born)/1000;const t=elapsed;const fadeStrand=ramp(t,ENTRANCE.strandStart,ENTRANCE.strandEnd),fadeDot=ramp(t,ENTRANCE.dotStart,ENTRANCE.dotEnd),fadeComet=ramp(t,ENTRANCE.cometStart,ENTRANCE.cometEnd);syncColors(cfg as Record<string,unknown>);const fov=fovForZoom(cfg.zoom as number);if(camera.fov!==fov){camera.fov=fov;camera.updateProjectionMatrix();}repelUniforms.uRadius.value=clamp((cfg.repelRadius as number)/((viewHeight)/2),0.01,3);flow+=dt*(cfg.flowSpeed as number);const us=repelUniforms.uStrength;us.value+=(repelTarget-us.value)*Math.min(1,dt*12);strandClock+=dt;if(strandClock>=STRAND_HZ&&strandGeo){strandClock-=STRAND_HZ;for(const strand of strands)drawStrand(strand,t,fadeStrand);(strandGeo.attributes.position as THREE.BufferAttribute).needsUpdate=true;(strandGeo.attributes.color as THREE.BufferAttribute).needsUpdate=true;}if(rippleAwake)settle(dt);if(dotMesh&&dotCount>0){const size=cfg.dotSize as number;for(let i=0;i<dotCount;i++){const dot=dotList[i];const strand=strands[dot.strand]??strands[0];const spin=flow*strand.speed,at=i*3;shape.writePoint(dotHome,at,dot.s,dot.lane,spin,WOBBLE,strand.wobblePhase,t);if(dotHitAt[i]>0){dotHitAt[i]+=dt;const age=dotHitAt[i];if(age<HIT_FADE){const k=age/HIT_FADE;dotAlive[i]=(1+(HIT_POP-1)*(1-k))*(1-k*k);dotFlash[i]=HIT_FLASH*(1-k*k)*(1-k*k);}else{dotAlive[i]=0;dotFlash[i]=0;}if(age>HIT_RESPAWN){dotHitAt[i]=0;dotAlive[i]=1;dotFlash[i]=0;}}const alive=dotAlive[i],scale=size*dotScale[i]*alive;dummy.makeScale(scale,scale,scale);dummy.setPosition(dotHome[at]+dotShift[at],dotHome[at+1]+dotShift[at+1],dotHome[at+2]+dotShift[at+2]);dotMesh.setMatrixAt(i,dummy);const beat=1-(cfg.dotFlicker as number)+(cfg.dotFlicker as number)*(0.08+0.92*Math.max(0,Math.sin(t*dot.flickerRate+dot.pulse))**2.5);const swollen=dotScale[i]>1.02?1+(dotScale[i]-1)*0.5:1;const v=dot.bright*beat*(cfg.dotGlow as number)*swollen*fadeDot*(1+dotFlash[i])*alive;dotColors[at]=tint.dot.r*v;dotColors[at+1]=tint.dot.g*v;dotColors[at+2]=tint.dot.b*v;}dotMesh.instanceMatrix.needsUpdate=true;if(dotMesh.instanceColor)dotMesh.instanceColor.needsUpdate=true;(dotMesh.material as THREE.MeshBasicMaterial).opacity=0.9*fadeDot;}for(const comet of cometList)driveComet(comet,t,dt,fadeComet);tick++;if(tick%2===0&&dotCount>0)collide(t);renderer.render(scene,camera);}
+  function step(now: number) { frame = requestAnimationFrame(step); const cfg = cfgRef.current as Record<string, unknown>; const dt = Math.min((now - lastTime) / 1000, 0.04); lastTime = now; if (!(cfg.running as boolean)) { if (!heldFrame) { renderer.render(scene, camera); heldFrame = true; } return; } heldFrame = false; if (born === 0) born = now; elapsed = (now - born) / 1000; const t = elapsed; const fadeStrand = ramp(t, ENTRANCE.strandStart, ENTRANCE.strandEnd), fadeDot = ramp(t, ENTRANCE.dotStart, ENTRANCE.dotEnd), fadeComet = ramp(t, ENTRANCE.cometStart, ENTRANCE.cometEnd); syncColors(cfg as Record<string, unknown>); const fov = fovForZoom(cfg.zoom as number); if (camera.fov !== fov) { camera.fov = fov; camera.updateProjectionMatrix(); } repelUniforms.uRadius.value = clamp((cfg.repelRadius as number) / ((viewHeight) / 2), 0.01, 3); flow += dt * (cfg.flowSpeed as number); const us = repelUniforms.uStrength; us.value += (repelTarget - us.value) * Math.min(1, dt * 12); strandClock += dt; if (strandClock >= STRAND_HZ && strandGeo) { strandClock -= STRAND_HZ; for (const strand of strands) drawStrand(strand, t, fadeStrand); (strandGeo.attributes.position as THREE.BufferAttribute).needsUpdate = true; (strandGeo.attributes.color as THREE.BufferAttribute).needsUpdate = true; } if (rippleAwake) settle(dt); if (dotMesh && dotCount > 0) { const size = cfg.dotSize as number; for (let i = 0; i < dotCount; i++) { const dot = dotList[i]; const strand = strands[dot.strand] ?? strands[0]; const spin = flow * strand.speed, at = i * 3; shape.writePoint(dotHome, at, dot.s, dot.lane, spin, WOBBLE, strand.wobblePhase, t); if (dotHitAt[i] > 0) { dotHitAt[i] += dt; const age = dotHitAt[i]; if (age < HIT_FADE) { const k = age / HIT_FADE; dotAlive[i] = (1 + (HIT_POP - 1) * (1 - k)) * (1 - k * k); dotFlash[i] = HIT_FLASH * (1 - k * k) * (1 - k * k); } else { dotAlive[i] = 0; dotFlash[i] = 0; } if (age > HIT_RESPAWN) { dotHitAt[i] = 0; dotAlive[i] = 1; dotFlash[i] = 0; } } const alive = dotAlive[i], scale = size * dotScale[i] * alive; dummy.makeScale(scale, scale, scale); dummy.setPosition(dotHome[at] + dotShift[at], dotHome[at + 1] + dotShift[at + 1], dotHome[at + 2] + dotShift[at + 2]); dotMesh.setMatrixAt(i, dummy); const beat = 1 - (cfg.dotFlicker as number) + (cfg.dotFlicker as number) * (0.08 + 0.92 * Math.max(0, Math.sin(t * dot.flickerRate + dot.pulse)) ** 2.5); const swollen = dotScale[i] > 1.02 ? 1 + (dotScale[i] - 1) * 0.5 : 1; const v = dot.bright * beat * (cfg.dotGlow as number) * swollen * fadeDot * (1 + dotFlash[i]) * alive; dotColors[at] = tint.dot.r * v; dotColors[at + 1] = tint.dot.g * v; dotColors[at + 2] = tint.dot.b * v; } dotMesh.instanceMatrix.needsUpdate = true; if (dotMesh.instanceColor) dotMesh.instanceColor.needsUpdate = true; (dotMesh.material as THREE.MeshBasicMaterial).opacity = 0.9 * fadeDot; } for (const comet of cometList) driveComet(comet, t, dt, fadeComet); tick++; if (tick % 2 === 0 && dotCount > 0) collide(t); renderer.render(scene, camera); }
 
   build();
   observer.observe(container);
@@ -359,7 +359,7 @@ function createVortex(canvas: HTMLCanvasElement, container: HTMLElement, cfgRef:
         (renderer as THREE.WebGLRenderer & { forceContextLoss: () => void }).forceContextLoss();
       }
     },
-    canvas // expose so we can remove it from DOM
+     // expose so we can remove it from DOM
   };
 }
 
@@ -461,7 +461,7 @@ export default function Vortex(props: VortexProps) {
   React.useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    
+
     if (!apiRef.current) {
       const canvas = document.createElement("canvas");
       canvas.style.display = "block";
@@ -481,11 +481,11 @@ export default function Vortex(props: VortexProps) {
     } else {
       apiRef.current.rebuild();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buildKey]);
 
   React.useEffect(() => {
-    return () => { 
+    return () => {
       if (apiRef.current) {
         apiRef.current.dispose();
         if (apiRef.current.canvas.parentNode) {

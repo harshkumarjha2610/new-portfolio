@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <>
-      <NameIntro onComplete={() => {}} />
+      {/* <NameIntro onComplete={() => {}} /> */}
       <Navbar />
       <SocialRail />
 
@@ -159,17 +159,17 @@ export default function Home() {
         </section>
 
         {/* ── Signature Projects ── */}
-        <SignatureProjects />
+        {/* <SignatureProjects /> */}
 
         {/* ── Rest of the Website ── */}
-        <ExperiencesTitle />
+        {/* <ExperiencesTitle /> */}
         <EvolveSection />
         <About />
         <Services />
-        <Works />
-        <TechStack />
-        <Blog />
-        <Contact />
+        {/* <Works /> */}
+        {/* <TechStack /> */}
+        {/* <Blog /> */}
+        {/* <Contact /> */}
       </main>
 
       {/* Slides in from right when "View Projects" is clicked */}
