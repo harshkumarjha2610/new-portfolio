@@ -43,7 +43,7 @@ export default function SplashCursor({
   const animationFrameId = useRef<number | null>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas: any = canvasRef.current;
     if (!canvas) return;
 
     let isActive = true;
@@ -83,8 +83,10 @@ export default function SplashCursor({
 
     const pointers = [new (PointerPrototype as any)()];
 
-    const { gl, ext } = getWebGLContext(canvas);
-    if (!gl || !ext) return;
+    const contextResult = getWebGLContext(canvas);
+    if (!contextResult.gl || !contextResult.ext) return;
+    const gl: any = contextResult.gl;
+    const ext: any = contextResult.ext;
 
     if (!ext.supportLinearFiltering) {
       config.DYE_RESOLUTION = 256;
@@ -99,7 +101,8 @@ export default function SplashCursor({
         antialias: false,
         preserveDrawingBuffer: false,
       };
-      let gl: WebGLRenderingContext | WebGL2RenderingContext | null = canvas.getContext("webgl2", params);
+      let gl: WebGLRenderingContext | WebGL2RenderingContext | null =
+        (canvas.getContext("webgl2", params) as WebGL2RenderingContext | null);
       const isWebGL2 = !!gl;
       if (!isWebGL2) {
         gl =
@@ -181,14 +184,14 @@ export default function SplashCursor({
       fragmentShaderSource: string;
       programs: any[];
       activeProgram: any;
-      uniforms: any[];
+      uniforms: any;
 
       constructor(vertexShader: any, fragmentShaderSource: string) {
         this.vertexShader = vertexShader;
         this.fragmentShaderSource = fragmentShaderSource;
         this.programs = [];
         this.activeProgram = null;
-        this.uniforms = [];
+        this.uniforms = {};
       }
       setKeywords(keywords: string[]) {
         let hash = 0;
@@ -232,7 +235,7 @@ export default function SplashCursor({
     }
 
     function getUniforms(program: any) {
-      let uniforms: any = [];
+      let uniforms: Record<string, any> = {};
       let uniformCount = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
       for (let i = 0; i < uniformCount; i++) {
         let uniformName = gl.getActiveUniform(program, i)!.name;
