@@ -3,6 +3,13 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+// You can set your phone number with country code (e.g. "918920669639")
+const WHATSAPP_NUMBER = "918920669639"; 
+// Optional: Free CallMeBot API Key to receive automated WhatsApp messages on your phone (Get key in 30s from CallMeBot)
+const CALLMEBOT_API_KEY = "YOUR_CALLMEBOT_API_KEY"; 
+// Replace with your Web3Forms Access Key from https://web3forms.com
+const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+
 export default function AestheticContact() {
   const [formState, setFormState] = useState({
     name: "",
@@ -13,17 +20,68 @@ export default function AestheticContact() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [whatsappNumber, setWhatsappNumber] = useState(WHATSAPP_NUMBER);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formState.name || !formState.email || !formState.message) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormState({ name: "", email: "", subject: "", message: "" });
-    }, 1000);
+
+    const messageText = 
+      `*New Portfolio Contact Message*\n\n` +
+      `👤 *Name:* ${formState.name}\n` +
+      `✉️ *Email:* ${formState.email}\n` +
+      `📌 *Subject:* ${formState.subject || "General Inquiry"}\n\n` +
+      `💬 *Message:*\n${formState.message}`;
+
+    const encodedText = encodeURIComponent(messageText);
+
+    // 1. Background WhatsApp Notification via CallMeBot (if API Key is configured)
+    if (CALLMEBOT_API_KEY && CALLMEBOT_API_KEY !== "YOUR_CALLMEBOT_API_KEY") {
+      try {
+        await fetch(
+          `https://api.callmebot.com/whatsapp.php?phone=${whatsappNumber}&text=${encodedText}&apikey=${CALLMEBOT_API_KEY}`,
+          { mode: "no-cors" }
+        );
+      } catch (err) {
+        console.error("CallMeBot error:", err);
+      }
+    }
+
+    // 2. Web3Forms submission (if configured)
+    if (WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY !== "YOUR_WEB3FORMS_ACCESS_KEY") {
+      try {
+        await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_ACCESS_KEY,
+            name: formState.name,
+            email: formState.email,
+            subject: formState.subject || "New Portfolio Contact Message",
+            message: formState.message,
+          }),
+        });
+      } catch (err) {
+        console.error("Web3Forms error:", err);
+      }
+    }
+
+    // Fallback: If no background keys are set, open WhatsApp directly for visitor
+    if (
+      (!CALLMEBOT_API_KEY || CALLMEBOT_API_KEY === "YOUR_CALLMEBOT_API_KEY") &&
+      (!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY")
+    ) {
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodedText}`, "_blank");
+    }
+
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+    setFormState({ name: "", email: "", subject: "", message: "" });
   };
 
   return (
@@ -61,11 +119,26 @@ export default function AestheticContact() {
                   Direct Email
                 </span>
                 <a
-                  href="mailto:contact@harshkumar.dev"
-                  className="text-2xl sm:text-3xl font-medium text-black hover:text-[#7d1a4a] transition-colors tracking-tight"
+                  href="mailto:harshkumarjha2610@gmail.com"
+                  className="text-xl sm:text-2xl md:text-3xl font-medium text-black hover:text-[#7d1a4a] transition-colors tracking-tight break-all"
                   style={{ fontFamily: "'Outfit', sans-serif" }}
                 >
-                  contact@harshkumar.dev
+                  harshkumarjha2610@gmail.com
+                </a>
+              </div>
+
+              <div>
+                <span className="text-xs uppercase tracking-wider text-[#888] font-semibold block mb-1.5 font-[family-name:var(--font-sans)]">
+                  WhatsApp Direct
+                </span>
+                <a
+                  href={`https://wa.me/${whatsappNumber}?text=Hi%20Harsh,%20I%20found%20your%20portfolio%20and%20would%20like%20to%20connect!`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#25D366]/10 text-[#128C7E] border border-[#25D366]/30 font-semibold text-sm hover:bg-[#25D366] hover:text-white transition-all font-[family-name:var(--font-sans)] shadow-sm group"
+                >
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#25D366] group-hover:bg-white transition-colors" />
+                  <span>Chat on WhatsApp ↗</span>
                 </a>
               </div>
 
@@ -90,7 +163,7 @@ export default function AestheticContact() {
                 </span>
               </div>
               <p className="text-xs text-[#666] leading-relaxed font-[family-name:var(--font-sans)]">
-                Typical reply time is under 24 hours. For urgent inquiries, feel free to reach out via social channels.
+                Typical reply time is under 24 hours. For urgent inquiries, feel free to reach out via WhatsApp or social channels.
               </p>
             </div>
 
@@ -100,13 +173,21 @@ export default function AestheticContact() {
                 Connect Across Platforms
               </span>
               <div className="flex flex-wrap gap-3">
-                {["GitHub", "LinkedIn", "Twitter / X", "Instagram"].map((social) => (
+                {[
+                  { name: "WhatsApp ↗", href: `https://wa.me/${whatsappNumber}?text=Hi%20Harsh!` },
+                  { name: "GitHub ↗", href: "#" },
+                  { name: "LinkedIn ↗", href: "#" },
+                  { name: "Twitter / X ↗", href: "#" },
+                  { name: "Instagram ↗", href: "#" },
+                ].map((social) => (
                   <a
-                    key={social}
-                    href="#"
+                    key={social.name}
+                    href={social.href}
+                    target={social.href.startsWith("http") ? "_blank" : "_self"}
+                    rel="noopener noreferrer"
                     className="px-4 py-2 rounded-full border border-[#e5e5e5] bg-white text-xs font-semibold text-[#333] hover:bg-black hover:text-white hover:border-black transition-all font-[family-name:var(--font-sans)]"
                   >
-                    {social} ↗
+                    {social.name}
                   </a>
                 ))}
               </div>

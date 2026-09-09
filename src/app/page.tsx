@@ -28,12 +28,14 @@ import AestheticContact     from "@/components/AestheticContact";
 import AnimatedFooter       from "@/components/AnimatedFooter";
 
 const Vortex = dynamic(() => import("@/components/Vortex"), { ssr: false });
+const SplashCursor = dynamic(() => import("@/components/SplashCursor"), { ssr: false });
 
 export default function Home() {
   useLenis();
 
   return (
     <>
+      <SplashCursor />
       {/* <NameIntro onComplete={() => {}} /> */}
       <Navbar />
       <SocialRail />
