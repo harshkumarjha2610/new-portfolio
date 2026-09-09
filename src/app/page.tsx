@@ -26,6 +26,7 @@ import InteractiveHero     from "@/components/InteractiveHero";
 import BehindTheLensBlog    from "@/components/BehindTheLensBlog";
 import AestheticContact     from "@/components/AestheticContact";
 import AnimatedFooter       from "@/components/AnimatedFooter";
+import HeroParallaxDemo     from "@/components/hero-parallax-demo";
 
 const Vortex = dynamic(() => import("@/components/Vortex"), { ssr: false });
 const SplashCursor = dynamic(() => import("@/components/SplashCursor"), { ssr: false });
@@ -186,8 +187,9 @@ export default function Home() {
           <SolarSystem />
         </section>
 
-        {/* ── Projects Grid (Different dimensions Bento Grid) ── */}
+        {/* ── Projects Parallax Showcase & Grid ── */}
         <div id="works">
+          <HeroParallaxDemo />
           <ProjectsGrid />
         </div>
 
