@@ -75,7 +75,7 @@ export default function ProjectsGrid() {
     <section id="projects" className="w-full bg-black text-white py-20 px-6 sm:px-10 lg:px-16 font-sans">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
+        {/* <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
           <div>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-white mb-2 leading-tight">
               Curiosity-led tools for truth-seeking minds.
@@ -91,159 +91,12 @@ export default function ProjectsGrid() {
           >
             Start Using Nexora
           </a>
-        </div>
+        </div> */}
 
         {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
-          {/* ── Block 01: Left Tall Column (Spans 5 cols on lg) ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            onClick={() => setSelectedProject(BENTO_PROJECTS.bento1)}
-            className="lg:col-span-5 relative rounded-[28px] overflow-hidden min-h-[580px] lg:min-h-[640px] flex flex-col justify-between p-6 sm:p-8 bg-neutral-900 border border-white/10 hover:border-white/30 transition-all duration-500 group cursor-pointer shadow-2xl"
-          >
-            {/* Background Image */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-              <Image
-                src={BENTO_PROJECTS.bento1.imageSrc}
-                alt={BENTO_PROJECTS.bento1.title}
-                fill
-                sizes="(max-width: 1024px) 100vw, 40vw"
-                className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-            </div>
-
-            {/* Top Header Row */}
-            <div className="relative z-10 flex justify-between items-center text-sm font-mono text-white/70 tracking-wider">
-              <span>{BENTO_PROJECTS.bento1.num}</span>
-              <span>{BENTO_PROJECTS.bento1.tag}</span>
-            </div>
-
-            {/* Bottom Content */}
-            <div className="relative z-10 mt-auto">
-              <h3 className="text-3xl sm:text-4xl font-normal tracking-tight text-white whitespace-pre-line leading-[1.15] mb-6">
-                {BENTO_PROJECTS.bento1.title}
-              </h3>
-
-              {/* Glassmorphism Subtitle Pill Container */}
-              <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 text-xs sm:text-sm text-white/90 font-normal leading-relaxed">
-                {BENTO_PROJECTS.bento1.pillText}
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ── Right Column Container (Spans 7 cols on lg) ── */}
-          <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-6">
-            {/* ── Block 02: Top Wide Landscape Card ── */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              onClick={() => setSelectedProject(BENTO_PROJECTS.bento2)}
-              className="relative rounded-[28px] overflow-hidden h-[280px] sm:h-[320px] flex flex-col justify-between p-6 sm:p-8 bg-neutral-900 border border-white/10 hover:border-white/30 transition-all duration-500 group cursor-pointer shadow-2xl"
-            >
-              {/* Background Image */}
-              <div className="absolute inset-0 z-0 overflow-hidden">
-                <Image
-                  src={BENTO_PROJECTS.bento2.imageSrc}
-                  alt={BENTO_PROJECTS.bento2.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
-              </div>
-
-              {/* Top Header Row */}
-              <div className="relative z-10 flex justify-between items-center w-full">
-                <h3 className="text-2xl sm:text-3xl font-normal tracking-tight text-white">
-                  {BENTO_PROJECTS.bento2.title}
-                </h3>
-                <span className="text-sm font-mono text-white/70">{BENTO_PROJECTS.bento2.num}</span>
-              </div>
-            </motion.div>
-
-            {/* ── Bottom Row: 2 Cards Side-by-Side ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 flex-1">
-              {/* ── Block 03: Bottom Middle Card ── */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                onClick={() => setSelectedProject(BENTO_PROJECTS.bento3)}
-                className="relative rounded-[28px] overflow-hidden min-h-[280px] sm:min-h-[300px] flex flex-col justify-between p-6 bg-neutral-900 border border-white/10 hover:border-white/30 transition-all duration-500 group cursor-pointer shadow-2xl"
-              >
-                {/* Background Image */}
-                <div className="absolute inset-0 z-0 overflow-hidden">
-                  <Image
-                    src={BENTO_PROJECTS.bento3.imageSrc}
-                    alt={BENTO_PROJECTS.bento3.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 30vw"
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-75 group-hover:opacity-90"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
-                </div>
-
-                {/* Top Header Row */}
-                <div className="relative z-10 flex justify-between items-center text-xs font-mono text-white/70 tracking-wider">
-                  <span>{BENTO_PROJECTS.bento3.tag}</span>
-                  <span>{BENTO_PROJECTS.bento3.num}</span>
-                </div>
-
-                {/* Content & Pill Button */}
-                <div className="relative z-10 mt-auto">
-                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed mb-5 max-w-[240px]">
-                    {BENTO_PROJECTS.bento3.description}
-                  </p>
-                  <span className="inline-block text-xs font-medium text-white bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 group-hover:bg-white group-hover:text-black transition-all duration-300">
-                    {BENTO_PROJECTS.bento3.buttonText}
-                  </span>
-                </div>
-              </motion.div>
-
-              {/* ── Block 04: Bottom Right Card ── */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                onClick={() => setSelectedProject(BENTO_PROJECTS.bento4)}
-                className="relative rounded-[28px] overflow-hidden min-h-[280px] sm:min-h-[300px] flex flex-col justify-between p-6 bg-neutral-900 border border-white/10 hover:border-white/30 transition-all duration-500 group cursor-pointer shadow-2xl"
-              >
-                {/* Background Image */}
-                <div className="absolute inset-0 z-0 overflow-hidden">
-                  <Image
-                    src={BENTO_PROJECTS.bento4.imageSrc}
-                    alt={BENTO_PROJECTS.bento4.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 30vw"
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-75 group-hover:opacity-90"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
-                </div>
-
-                {/* Top Header Row */}
-                <div className="relative z-10 flex justify-between items-center text-xs font-mono text-white/70 tracking-wider">
-                  <span>{BENTO_PROJECTS.bento4.tag}</span>
-                  <span>{BENTO_PROJECTS.bento4.num}</span>
-                </div>
-
-                {/* Bottom Title */}
-                <div className="relative z-10 mt-auto">
-                  <h4 className="text-sm sm:text-base font-normal text-white/90 leading-snug">
-                    {BENTO_PROJECTS.bento4.title}
-                  </h4>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </div>
+        {/* <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+          ...bento cards commented out...
+        </div> */}
       </div>
 
       {/* Project Detail Lightbox Modal */}

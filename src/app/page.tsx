@@ -25,8 +25,8 @@ import InteractiveHero     from "@/components/InteractiveHero";
 
 import BehindTheLensBlog    from "@/components/BehindTheLensBlog";
 import AestheticContact     from "@/components/AestheticContact";
-import AnimatedFooter       from "@/components/AnimatedFooter";
 import HeroParallaxDemo     from "@/components/hero-parallax-demo";
+import GlyphStream          from "@/components/GlyphStream";
 
 const Vortex = dynamic(() => import("@/components/Vortex"), { ssr: false });
 const SplashCursor = dynamic(() => import("@/components/SplashCursor"), { ssr: false });
@@ -201,8 +201,23 @@ export default function Home() {
         {/* ── Light Theme Aesthetic Contact Us Section ── */}
         <AestheticContact />
 
-        {/* ── Animated ASCII Reveal Footer (HARSH) ── */}
-        <AnimatedFooter headingLines={["HARSH"]} />
+        {/* ── Glyphstream ASCII Art Footer ── */}
+        <div className="w-full" style={{ height: "480px", background: "#0A0A0A" }}>
+          <GlyphStream
+            media="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260507_155500_808e6fdd-761f-4acd-b3be-cb7e6e700def.mp4"
+            cellSize={6}
+            characters="@%#*+=-:. "
+            colorMode="monochrome"
+            glyphColor="#FFFFFF"
+            backgroundColor="#0A0A0A"
+            contrast={1.2}
+            darkCutoff={0.1}
+            minOpacity={0.12}
+            playback="inView"
+            loop={true}
+            frameRate={24}
+          />
+        </div>
 
         {/* <Works /> */}
         {/* <TechStack /> */}
